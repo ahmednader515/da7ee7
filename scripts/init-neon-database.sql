@@ -264,6 +264,8 @@ CREATE TABLE IF NOT EXISTS "HomepageSetting" (
   platform_name       TEXT,
   whatsapp_url        TEXT,
   facebook_url        TEXT,
+  team_whatsapp_url   TEXT,
+  team_facebook_url   TEXT,
   page_title          TEXT,
   hero_bg_preset      TEXT,
   footer_title        TEXT,
@@ -275,6 +277,8 @@ CREATE TABLE IF NOT EXISTS "HomepageSetting" (
 -- لو الجدول كان موجوداً قديماً بدون الأعمدة الجديدة نضيفها
 ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS whatsapp_url TEXT;
 ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS facebook_url TEXT;
+ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS team_whatsapp_url TEXT;
+ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS team_facebook_url TEXT;
 ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS page_title TEXT;
 ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS hero_bg_preset TEXT;
 ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS hero_bg_custom_from TEXT;
@@ -284,7 +288,7 @@ ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS footer_tagline TEXT;
 ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS footer_copyright TEXT;
 
 -- إدراج الصف الافتراضي إن لم يكن موجوداً
-INSERT INTO "HomepageSetting" (id, teacher_image_url, hero_title, hero_slogan, platform_name, whatsapp_url, facebook_url, page_title, hero_bg_preset, footer_title, footer_tagline, footer_copyright, updated_at)
+INSERT INTO "HomepageSetting" (id, teacher_image_url, hero_title, hero_slogan, platform_name, whatsapp_url, facebook_url, team_whatsapp_url, team_facebook_url, page_title, hero_bg_preset, footer_title, footer_tagline, footer_copyright, updated_at)
 VALUES (
   'default',
   '/instructor.png',
@@ -293,6 +297,8 @@ VALUES (
   'منصة أستاذ عصام محي',
   'https://wa.me/966553612356',
   'https://www.facebook.com/profile.php?id=61562686209159',
+  NULL,
+  NULL,
   'منصتي التعليمية | دورات وتعلم أونلاين',
   'navy',
   'منصتي التعليمية',
@@ -307,6 +313,8 @@ UPDATE "HomepageSetting"
 SET
   whatsapp_url     = COALESCE(whatsapp_url, 'https://wa.me/966553612356'),
   facebook_url     = COALESCE(facebook_url, 'https://www.facebook.com/profile.php?id=61562686209159'),
+  team_whatsapp_url = COALESCE(team_whatsapp_url, NULL),
+  team_facebook_url = COALESCE(team_facebook_url, NULL),
   page_title       = COALESCE(page_title, 'منصتي التعليمية | دورات وتعلم أونلاين'),
   hero_bg_preset   = COALESCE(hero_bg_preset, 'navy'),
   footer_title     = COALESCE(footer_title, 'منصتي التعليمية'),

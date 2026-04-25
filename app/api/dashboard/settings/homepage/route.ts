@@ -41,6 +41,8 @@ export async function PUT(request: NextRequest) {
     primaryColor?: string | null;
     whatsappUrl?: string | null;
     facebookUrl?: string | null;
+    teamWhatsappUrl?: string | null;
+    teamFacebookUrl?: string | null;
     pageTitle?: string | null;
     heroBgPreset?: string | null;
     heroBgCustomFrom?: string | null;
@@ -386,6 +388,8 @@ export async function PUT(request: NextRequest) {
       primary_color,
       whatsapp_url: body.whatsappUrl !== undefined ? body.whatsappUrl : undefined,
       facebook_url: body.facebookUrl !== undefined ? body.facebookUrl : undefined,
+      team_whatsapp_url: body.teamWhatsappUrl !== undefined ? body.teamWhatsappUrl : undefined,
+      team_facebook_url: body.teamFacebookUrl !== undefined ? body.teamFacebookUrl : undefined,
       page_title: body.pageTitle !== undefined ? body.pageTitle : undefined,
       hero_bg_preset: body.heroBgPreset !== undefined ? body.heroBgPreset : undefined,
       hero_bg_custom_from,

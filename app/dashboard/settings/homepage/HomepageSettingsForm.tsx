@@ -126,6 +126,8 @@ export function HomepageSettingsForm({
     pageTitle: initialSettings.pageTitle ?? "",
     whatsappUrl: initialSettings.whatsappUrl ?? "",
     facebookUrl: initialSettings.facebookUrl ?? "",
+    teamWhatsappUrl: initialSettings.teamWhatsappUrl ?? "",
+    teamFacebookUrl: initialSettings.teamFacebookUrl ?? "",
     heroBgPreset: (initialSettings.heroBgPreset as HeroBgPreset) || "navy",
     heroBgUseCustom: initialHeroBg.useCustom,
     heroBgCustomFrom: initialHeroBg.from,
@@ -317,6 +319,8 @@ export function HomepageSettingsForm({
           pageTitle: form.pageTitle.trim() || null,
           whatsappUrl: form.whatsappUrl.trim() || null,
           facebookUrl: form.facebookUrl.trim() || null,
+          teamWhatsappUrl: form.teamWhatsappUrl.trim() || null,
+          teamFacebookUrl: form.teamFacebookUrl.trim() || null,
           heroBgPreset: form.heroBgPreset || null,
           heroBgCustomFrom: form.heroBgUseCustom ? customFromNorm : null,
           heroBgCustomTo: form.heroBgUseCustom ? customToNorm : null,
@@ -1688,11 +1692,13 @@ export function HomepageSettingsForm({
       <div className="rounded-[var(--radius-card)] border border-[var(--color-border)] bg-[var(--color-surface)] p-6">
         <h3 className="mb-4 text-lg font-semibold text-[var(--color-foreground)]">روابط التواصل (الصفحة الرئيسية)</h3>
         <p className="mb-3 text-sm text-[var(--color-muted)]">
-          رابط واحد لواتساب ورابط واحد لفيسبوك فقط (أزرار ثابتة أسفل يمين الصفحة). اترك الحقل فارغاً لإخفاء الزر من الصفحة.
+          روابط دعم المدرّس (أسفل يمين) وروابط دعم الفريق (أسفل يسار). اترك أي حقل فارغاً لإخفاء الزر من الصفحة الرئيسية.
         </p>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[var(--color-foreground)]">رابط واتساب</label>
+            <label className="block text-sm font-medium text-[var(--color-foreground)]">
+              رابط واتساب (دعم المدرّس — يمين)
+            </label>
             <input
               type="url"
               value={form.whatsappUrl}
@@ -1703,7 +1709,9 @@ export function HomepageSettingsForm({
             <p className="mt-1 text-xs text-[var(--color-muted)]">فارغ = عدم عرض زر واتساب.</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-[var(--color-foreground)]">رابط فيسبوك</label>
+            <label className="block text-sm font-medium text-[var(--color-foreground)]">
+              رابط فيسبوك (دعم المدرّس — يمين)
+            </label>
             <input
               type="url"
               value={form.facebookUrl}
@@ -1712,6 +1720,33 @@ export function HomepageSettingsForm({
               placeholder="https://www.facebook.com/..."
             />
             <p className="mt-1 text-xs text-[var(--color-muted)]">فارغ = عدم عرض زر فيسبوك.</p>
+          </div>
+          <hr className="border-[var(--color-border)]" />
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-foreground)]">
+              رابط واتساب (دعم الفريق — يسار)
+            </label>
+            <input
+              type="url"
+              value={form.teamWhatsappUrl}
+              onChange={(e) => setForm((f) => ({ ...f, teamWhatsappUrl: e.target.value }))}
+              className="mt-1 w-full rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2"
+              placeholder="https://wa.me/966553612356"
+            />
+            <p className="mt-1 text-xs text-[var(--color-muted)]">فارغ = عدم عرض زر واتساب (يسار).</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--color-foreground)]">
+              رابط فيسبوك (دعم الفريق — يسار)
+            </label>
+            <input
+              type="url"
+              value={form.teamFacebookUrl}
+              onChange={(e) => setForm((f) => ({ ...f, teamFacebookUrl: e.target.value }))}
+              className="mt-1 w-full rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-background)] px-3 py-2"
+              placeholder="https://www.facebook.com/..."
+            />
+            <p className="mt-1 text-xs text-[var(--color-muted)]">فارغ = عدم عرض زر فيسبوك (يسار).</p>
           </div>
         </div>
       </div>

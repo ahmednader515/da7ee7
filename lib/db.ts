@@ -693,6 +693,8 @@ const HOMEPAGE_DEFAULTS: HomepageSetting = {
   primaryColor: null,
   whatsappUrl: "https://wa.me/966553612356",
   facebookUrl: "https://www.facebook.com/profile.php?id=61562686209159",
+  teamWhatsappUrl: null,
+  teamFacebookUrl: null,
   pageTitle: "منصتي التعليمية | دورات وتعلم أونلاين",
   heroBgPreset: "navy",
   heroBgCustomFrom: null,
@@ -825,6 +827,16 @@ async function ensureHomepagePrimaryColorColumn(): Promise<void> {
 async function ensureHomepageHeaderLogoColumn(): Promise<void> {
   try {
     await sql`ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS header_logo_url TEXT`;
+  } catch {
+    /* DDL غير متاح */
+  }
+}
+
+/** روابط دعم فريق المنصة (واتساب + فيسبوك) — أزرار ثابتة أسفل يسار الصفحة الرئيسية */
+async function ensureHomepageTeamSupportLinksColumns(): Promise<void> {
+  try {
+    await sql`ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS team_whatsapp_url TEXT`;
+    await sql`ALTER TABLE "HomepageSetting" ADD COLUMN IF NOT EXISTS team_facebook_url TEXT`;
   } catch {
     /* DDL غير متاح */
   }
@@ -1153,6 +1165,7 @@ async function getHomepageSettingsUncached(): Promise<HomepageSetting> {
     await ensureHomepageStoreSectionCopyColumns();
     await ensureHomepagePrimaryColorColumn();
     await ensureHomepageHeaderLogoColumn();
+    await ensureHomepageTeamSupportLinksColumns();
     await ensureHomepageCtaCopyColumns();
     await ensureHomepagePlatformDetailsColumns();
     await ensureHomepagePlatformNewsColumns();
@@ -1226,6 +1239,14 @@ async function getHomepageSettingsUncached(): Promise<HomepageSetting> {
       /* لا نستخدم الافتراضي عند الحذف — لو القيمة null أو فارغة نرجع null حتى يختفي الزر */
       whatsappUrl: c.whatsappUrl != null && String(c.whatsappUrl).trim() !== "" ? String(c.whatsappUrl).trim() : null,
       facebookUrl: c.facebookUrl != null && String(c.facebookUrl).trim() !== "" ? String(c.facebookUrl).trim() : null,
+      teamWhatsappUrl:
+        row.team_whatsapp_url != null && String(row.team_whatsapp_url).trim() !== ""
+          ? String(row.team_whatsapp_url).trim().slice(0, 4000)
+          : null,
+      teamFacebookUrl:
+        row.team_facebook_url != null && String(row.team_facebook_url).trim() !== ""
+          ? String(row.team_facebook_url).trim().slice(0, 4000)
+          : null,
       pageTitle: (c.pageTitle as string) ?? HOMEPAGE_DEFAULTS.pageTitle,
       heroBgPreset: (c.heroBgPreset as string) ?? HOMEPAGE_DEFAULTS.heroBgPreset,
       heroBgCustomFrom: (() => {
@@ -1483,6 +1504,8 @@ export async function updateHomepageSettings(data: {
   primary_color?: string | null;
   whatsapp_url?: string | null;
   facebook_url?: string | null;
+  team_whatsapp_url?: string | null;
+  team_facebook_url?: string | null;
   page_title?: string | null;
   hero_bg_preset?: string | null;
   hero_bg_custom_from?: string | null;
@@ -1548,6 +1571,7 @@ export async function updateHomepageSettings(data: {
   await ensureAddBalanceSettingsColumns();
   await ensureHomepagePrimaryColorColumn();
   await ensureHomepageHeaderLogoColumn();
+  await ensureHomepageTeamSupportLinksColumns();
   await ensureHomepageCtaCopyColumns();
   await ensureHomepagePlatformDetailsColumns();
   await ensureHomepagePlatformNewsColumns();
@@ -1577,6 +1601,12 @@ export async function updateHomepageSettings(data: {
   }
   if (data.facebook_url !== undefined) {
     await sql`UPDATE "HomepageSetting" SET facebook_url = ${data.facebook_url}, updated_at = NOW() WHERE id = 'default'`;
+  }
+  if (data.team_whatsapp_url !== undefined) {
+    await sql`UPDATE "HomepageSetting" SET team_whatsapp_url = ${data.team_whatsapp_url}, updated_at = NOW() WHERE id = 'default'`;
+  }
+  if (data.team_facebook_url !== undefined) {
+    await sql`UPDATE "HomepageSetting" SET team_facebook_url = ${data.team_facebook_url}, updated_at = NOW() WHERE id = 'default'`;
   }
   if (data.page_title !== undefined) {
     await sql`UPDATE "HomepageSetting" SET page_title = ${data.page_title}, updated_at = NOW() WHERE id = 'default'`;

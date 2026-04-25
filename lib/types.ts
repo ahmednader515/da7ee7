@@ -109,6 +109,9 @@ export interface HomepageSetting {
   primaryColor?: string | null;
   whatsappUrl: string | null;
   facebookUrl: string | null;
+  /** روابط دعم فريق المنصة (أزرار ثابتة أسفل يسار الصفحة الرئيسية) */
+  teamWhatsappUrl?: string | null;
+  teamFacebookUrl?: string | null;
   pageTitle: string | null;
   heroBgPreset: HeroBgPreset | string | null;
   /** لون أعلى التدرج المخصّص (#RRGGBB) — يُستخدم مع heroBgCustomTo عند صلاحيتهما */

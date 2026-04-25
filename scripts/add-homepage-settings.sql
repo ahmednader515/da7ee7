@@ -9,12 +9,14 @@ CREATE TABLE IF NOT EXISTS "HomepageSetting" (
   platform_name       TEXT,
   whatsapp_url        TEXT,
   facebook_url        TEXT,
+  team_whatsapp_url   TEXT,
+  team_facebook_url   TEXT,
   page_title          TEXT,
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- إدراج الصف الافتراضي إن لم يكن موجوداً
-INSERT INTO "HomepageSetting" (id, teacher_image_url, hero_title, hero_slogan, platform_name, whatsapp_url, facebook_url, page_title, updated_at)
+INSERT INTO "HomepageSetting" (id, teacher_image_url, hero_title, hero_slogan, platform_name, whatsapp_url, facebook_url, team_whatsapp_url, team_facebook_url, page_title, updated_at)
 VALUES (
   'default',
   '/instructor.png',
@@ -23,6 +25,8 @@ VALUES (
   'منصة أستاذ عصام محي',
   'https://wa.me/966553612356',
   'https://www.facebook.com/profile.php?id=61562686209159',
+  NULL,
+  NULL,
   'منصتي التعليمية | دورات وتعلم أونلاين',
   NOW()
 )
