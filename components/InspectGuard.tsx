@@ -10,6 +10,14 @@ export function InspectGuard() {
   const [devToolsOpen, setDevToolsOpen] = useState(false);
 
   useEffect(() => {
+    // على شاشات الموبايل لا نفعّل أي كشف/منع متعلق بـ DevTools/Inspect
+    // لأن مؤشرات مثل outer/inner width/height تكون غير موثوقة وقد تُطلق إنذارات خاطئة.
+    const isMobileScreen =
+      window.matchMedia?.("(max-width: 768px)")?.matches ||
+      window.matchMedia?.("(pointer: coarse)")?.matches ||
+      (typeof navigator !== "undefined" && navigator.maxTouchPoints > 0);
+    if (isMobileScreen) return;
+
     // منع قائمة السياق (كليك يمين)
     const preventContext = (e: MouseEvent) => e.preventDefault();
     document.addEventListener("contextmenu", preventContext);
