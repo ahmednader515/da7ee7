@@ -9,7 +9,9 @@ import {
   hasFullCourseAccessAsStudent,
   ensureUserCopyrightCode,
 } from "@/lib/db";
-import { YouTubeOverlayPlayer } from "@/components/YouTubeOverlayPlayer";
+import { PlyrVideoPlayer } from "@/components/plyr-video-player";
+import { VideoCopyrightWatermark } from "@/components/VideoCopyrightWatermark";
+import { getYouTubeVideoId } from "@/lib/youtube";
 import { CourseOutlineSidebar } from "@/components/CourseOutlineSidebar";
 import { LessonHomeworkSection } from "./LessonHomeworkSection";
 
@@ -96,6 +98,8 @@ export default async function LessonPage({ params }: Props) {
 
   const lessonObj = lesson as Record<string, unknown>;
   const videoUrl = (lessonObj.videoUrl ?? lessonObj.video_url) as string;
+  const youtubeVideoId = getYouTubeVideoId(videoUrl);
+  const lessonId = String(lessonObj.id);
   const courseTitle = (course.titleAr ?? course.title) as string;
   const lessonTitle = (lessonObj.titleAr ?? lessonObj.title) as string;
 
@@ -133,15 +137,19 @@ export default async function LessonPage({ params }: Props) {
         <article className="min-w-0 lg:col-start-1 lg:row-start-1">
           <h1 className="text-2xl font-bold text-[var(--color-foreground)]">{lessonTitle}</h1>
 
-          {videoUrl && (
-            <div className="mt-6 w-full min-w-0">
-              <YouTubeOverlayPlayer
-                videoUrl={videoUrl}
-                title={lessonTitle}
-                studentCopyrightCode={studentCopyrightCode}
+          {youtubeVideoId ? (
+            <div className="relative mt-6 w-full min-w-0">
+              <PlyrVideoPlayer
+                key={`${lessonId}-${youtubeVideoId}`}
+                youtubeVideoId={youtubeVideoId}
+                storageKey={lessonId}
+                className="w-full"
               />
+              {studentCopyrightCode?.trim() ? (
+                <VideoCopyrightWatermark code={studentCopyrightCode.trim()} />
+              ) : null}
             </div>
-          )}
+          ) : null}
 
           {(lessonObj.pdfUrl ?? lessonObj.pdf_url) ? (
             <div className="mt-6">
