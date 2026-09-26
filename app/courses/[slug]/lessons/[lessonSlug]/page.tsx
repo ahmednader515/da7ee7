@@ -10,7 +10,6 @@ import {
   ensureUserCopyrightCode,
 } from "@/lib/db";
 import { PlyrVideoPlayer } from "@/components/plyr-video-player";
-import { VideoCopyrightWatermark } from "@/components/VideoCopyrightWatermark";
 import { getYouTubeVideoId } from "@/lib/youtube";
 import { CourseOutlineSidebar } from "@/components/CourseOutlineSidebar";
 import { LessonHomeworkSection } from "./LessonHomeworkSection";
@@ -144,10 +143,8 @@ export default async function LessonPage({ params }: Props) {
                 youtubeVideoId={youtubeVideoId}
                 storageKey={lessonId}
                 className="w-full"
+                copyrightCode={studentCopyrightCode}
               />
-              {studentCopyrightCode?.trim() ? (
-                <VideoCopyrightWatermark code={studentCopyrightCode.trim()} />
-              ) : null}
             </div>
           ) : null}
 

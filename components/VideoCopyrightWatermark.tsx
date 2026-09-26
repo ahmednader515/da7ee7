@@ -20,6 +20,7 @@ export function VideoCopyrightWatermark({ code }: { code: string }) {
   const pos = positions[tick % positions.length];
   return (
     <div
+      data-copyright-watermark
       className={`pointer-events-none absolute z-[25] max-w-[min(90%,14rem)] select-none rounded-md border border-white/25 bg-black/60 px-2 py-1.5 text-[10px] font-semibold text-white/95 shadow-lg backdrop-blur-sm sm:text-[11px] ${pos}`}
       dir="rtl"
       aria-hidden

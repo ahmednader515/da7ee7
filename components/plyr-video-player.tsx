@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import "plyr/dist/plyr.css";
 import { useT } from "./LocaleProvider";
 import { VideoQualityTutorialDialog } from "./video-quality-tutorial-dialog";
+import { VideoCopyrightWatermark } from "./VideoCopyrightWatermark";
 import {
   exitFullscreenSafe,
   getFullscreenElement,
@@ -16,6 +17,7 @@ export interface PlyrVideoPlayerProps {
   youtubeVideoId: string;
   storageKey?: string;
   className?: string;
+  copyrightCode?: string | null;
   onEnded?: () => void;
   onTimeUpdate?: (currentTime: number) => void;
 }
@@ -55,6 +57,7 @@ export function PlyrVideoPlayer({
   youtubeVideoId,
   storageKey,
   className = "",
+  copyrightCode,
   onEnded,
   onTimeUpdate,
 }: PlyrVideoPlayerProps) {
@@ -314,9 +317,18 @@ export function PlyrVideoPlayer({
     isPlayerReady &&
     (fullscreenContainer ? createPortal(seekControls, fullscreenContainer) : seekControls);
 
+  const copyrightMark = copyrightCode?.trim() ? (
+    <VideoCopyrightWatermark code={copyrightCode.trim()} />
+  ) : null;
+  const copyrightOverlay =
+    copyrightMark && fullscreenContainer
+      ? createPortal(copyrightMark, fullscreenContainer)
+      : copyrightMark;
+
   return (
     <div ref={playerRootRef} className={`lesson-plyr-video relative h-full w-full ${className}`.trim()}>
       <div ref={youtubeContainerRef} className="h-full w-full" />
+      {copyrightOverlay}
       {overlayControls}
       <VideoQualityTutorialDialog open={qualityDialogOpen} onClose={closeQualityDialog} />
     </div>

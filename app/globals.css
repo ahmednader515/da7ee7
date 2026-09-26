@@ -491,6 +491,11 @@ html:not(.light):not(.dark) .home-teachers-hero-blend {
 :-webkit-full-screen [data-video-controls] {
   z-index: 2147483647;
 }
+.plyr--fullscreen-fallback [data-copyright-watermark],
+:fullscreen [data-copyright-watermark],
+:-webkit-full-screen [data-copyright-watermark] {
+  z-index: 2147483646;
+}
 .lesson-video-overlay-btn {
   touch-action: manipulation;
 }
