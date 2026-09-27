@@ -491,10 +491,24 @@ html:not(.light):not(.dark) .home-teachers-hero-blend {
 :-webkit-full-screen [data-video-controls] {
   z-index: 2147483647;
 }
+.plyr--fullscreen-active [data-copyright-watermark],
 .plyr--fullscreen-fallback [data-copyright-watermark],
 :fullscreen [data-copyright-watermark],
 :-webkit-full-screen [data-copyright-watermark] {
   z-index: 2147483646;
+}
+.copyright-watermark-code {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(0.95rem, 1.7vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.72);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.75);
 }
 .lesson-video-overlay-btn {
   touch-action: manipulation;
