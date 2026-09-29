@@ -24,7 +24,7 @@ const outfit = Outfit({
 });
 
 const DEFAULT_TITLE = "منصتي التعليمية | دورات وتعلم أونلاين";
-const DEFAULT_DESCRIPTION = "منصة تعليمية حديثة لدورات البرمجة والتصميم والتطوير";
+const DEFAULT_DESCRIPTION = "منصة تعليمية حديثة لطلاب حقوق عين شمس";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
