@@ -62,6 +62,7 @@ export function CreateCourseForm() {
   const [imageUploading, setImageUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState("");
   const [pdfUploading, setPdfUploading] = useState<number | null>(null);
+  const [pdfUploadError, setPdfUploadError] = useState<{ index: number; message: string } | null>(null);
 
   function slugify(s: string) {
     return s.trim().toLowerCase().replace(/\s+/g, "-").replace(/[^\w\u0600-\u06FF-]+/g, "");
@@ -495,13 +496,23 @@ export function CreateCourseForm() {
                       onChange={(async (e) => {
                         const f = e.target.files?.[0];
                         if (!f) return;
+                        setPdfUploadError(null);
                         setPdfUploading(i);
                         try {
                           const fd = new FormData();
                           fd.set("file", f);
                           const res = await fetch("/api/upload/pdf", { method: "POST", body: fd });
                           const data = await res.json().catch(() => ({}));
-                          if (res.ok && data.url) updateLesson(i, "pdfUrl", data.url);
+                          if (res.ok && data.url) {
+                            updateLesson(i, "pdfUrl", data.url);
+                            return;
+                          }
+                          setPdfUploadError({
+                            index: i,
+                            message: typeof data.error === "string" ? data.error : "فشل رفع الملف",
+                          });
+                        } catch {
+                          setPdfUploadError({ index: i, message: "فشل رفع الملف" });
                         } finally {
                           setPdfUploading(null);
                           e.target.value = "";
@@ -510,6 +521,9 @@ export function CreateCourseForm() {
                     />
                   </label>
                 )}
+                {pdfUploadError?.index === i ? (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{pdfUploadError.message}</p>
+                ) : null}
               </div>
               <textarea
                 value={lesson.content}

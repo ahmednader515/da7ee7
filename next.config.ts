@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ["@neondatabase/serverless"],
+  experimental: {
+    /** Lesson PDF uploads have no app-level size cap; Next still buffers the body. */
+    proxyClientMaxBodySize: "10gb",
+  },
   turbopack: {
     resolveAlias: {
       "next/auth": "next-auth",

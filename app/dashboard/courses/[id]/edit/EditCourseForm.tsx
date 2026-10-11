@@ -117,6 +117,7 @@ export function EditCourseForm({ courseId, initialData }: { courseId: string; in
   const [imageUploading, setImageUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState("");
   const [pdfUploading, setPdfUploading] = useState<number | null>(null);
+  const [pdfUploadError, setPdfUploadError] = useState<{ index: number; message: string } | null>(null);
 
   function addLesson() {
     setLessons((l) => [...l, { ...defaultLesson }]);
@@ -483,13 +484,23 @@ export function EditCourseForm({ courseId, initialData }: { courseId: string; in
                       onChange={async (e) => {
                         const f = e.target.files?.[0];
                         if (!f) return;
+                        setPdfUploadError(null);
                         setPdfUploading(i);
                         try {
                           const fd = new FormData();
                           fd.set("file", f);
                           const res = await fetch("/api/upload/pdf", { method: "POST", body: fd });
                           const data = await res.json().catch(() => ({}));
-                          if (res.ok && data.url) updateLesson(i, "pdfUrl", data.url);
+                          if (res.ok && data.url) {
+                            updateLesson(i, "pdfUrl", data.url);
+                            return;
+                          }
+                          setPdfUploadError({
+                            index: i,
+                            message: typeof data.error === "string" ? data.error : "فشل رفع الملف",
+                          });
+                        } catch {
+                          setPdfUploadError({ index: i, message: "فشل رفع الملف" });
                         } finally {
                           setPdfUploading(null);
                           e.target.value = "";
@@ -498,6 +509,9 @@ export function EditCourseForm({ courseId, initialData }: { courseId: string; in
                     />
                   </label>
                 )}
+                {pdfUploadError?.index === i ? (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{pdfUploadError.message}</p>
+                ) : null}
               </div>
               <textarea value={lesson.content} onChange={(e) => updateLesson(i, "content", e.target.value)} placeholder="ملاحظات أو نص الحصة (اختياري)" rows={2} className="w-full rounded-[var(--radius-btn)] border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-sm" />
               <label className="flex items-center gap-2 pt-2">
