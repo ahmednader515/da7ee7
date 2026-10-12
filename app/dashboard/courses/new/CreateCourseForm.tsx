@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { uploadPdf } from "@/lib/upload-pdf";
 import { CourseFormSaveOverlay } from "../CourseFormSaveOverlay";
 
 type CategoryOption = { id: string; name: string; nameAr?: string | null };
@@ -494,28 +495,22 @@ export function CreateCourseForm() {
                       className="hidden"
                       disabled={pdfUploading !== null}
                       onChange={(async (e) => {
-                        const f = e.target.files?.[0];
+                        const input = e.currentTarget;
+                        const f = input.files?.[0];
                         if (!f) return;
                         setPdfUploadError(null);
                         setPdfUploading(i);
                         try {
-                          const fd = new FormData();
-                          fd.set("file", f);
-                          const res = await fetch("/api/upload/pdf", { method: "POST", body: fd });
-                          const data = await res.json().catch(() => ({}));
-                          if (res.ok && data.url) {
-                            updateLesson(i, "pdfUrl", data.url);
-                            return;
-                          }
+                          const url = await uploadPdf(f);
+                          updateLesson(i, "pdfUrl", url);
+                        } catch (error) {
                           setPdfUploadError({
                             index: i,
-                            message: typeof data.error === "string" ? data.error : "فشل رفع الملف",
+                            message: error instanceof Error ? error.message : "فشل رفع الملف",
                           });
-                        } catch {
-                          setPdfUploadError({ index: i, message: "فشل رفع الملف" });
                         } finally {
                           setPdfUploading(null);
-                          e.target.value = "";
+                          input.value = "";
                         }
                       })}
                     />

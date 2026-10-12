@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 function getR2Config() {
   return {
@@ -52,6 +53,21 @@ export async function uploadToR2(
 export function isR2Configured(): boolean {
   const { accountId, accessKeyId, secretAccessKey, bucket } = getR2Config();
   return !!(accountId && accessKeyId && secretAccessKey && bucket);
+}
+
+export async function createPdfUploadUrl() {
+  const { bucket, publicUrl } = getR2Config();
+  const client = getClient();
+  if (!client || !bucket || !publicUrl) {
+    throw new Error("التخزين R2 غير مضبوط. تأكد من إعداد رابط الملفات العام R2_PUBLIC_URL.");
+  }
+  const key = `pdfs/${crypto.randomUUID()}.pdf`;
+  const uploadUrl = await getSignedUrl(
+    client,
+    new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: "application/pdf" }),
+    { expiresIn: 900 }
+  );
+  return { uploadUrl, url: `${publicUrl}/${key}`, key };
 }
 
 /** يُرجع قائمة بأسماء المتغيرات الناقصة في .env */
