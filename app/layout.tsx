@@ -7,7 +7,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SessionProvider } from "@/components/SessionProvider";
 import { StoreSplashProvider } from "@/components/StoreSplashProvider";
-import { InspectGuard } from "@/components/InspectGuard";
+import { DevToolsGuard } from "@/components/devtools-guard";
 import { ForceLogoutGuard } from "@/components/ForceLogoutGuard";
 import { authOptions } from "@/lib/auth";
 import {
@@ -116,7 +116,7 @@ export default async function RootLayout({
         />
         <SessionProvider>
           <StoreSplashProvider>
-          <InspectGuard />
+          <DevToolsGuard />
           <ForceLogoutGuard />
           <Header
             platformName={platformName}
