@@ -165,6 +165,18 @@ export function PlyrVideoPlayer({
   useEffect(() => {
     if (!youtubeVideoId) return;
     let isCancelled = false;
+    // Plyr/YouTube creates the iframe asynchronously.
+    const applyIframeAttributes = () => {
+      playerRootRef.current?.querySelectorAll("iframe").forEach((iframe) => {
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+        iframe.allowFullscreen = true;
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      });
+    };
+    const iframeObserver = new MutationObserver(applyIframeAttributes);
+    if (playerRootRef.current) {
+      iframeObserver.observe(playerRootRef.current, { childList: true, subtree: true });
+    }
 
     async function setupPlayer() {
       const target = youtubeContainerRef.current;
@@ -182,7 +194,12 @@ export function PlyrVideoPlayer({
       const plyrModule = await import("plyr");
       if (isCancelled) return;
       const PlyrConstructor = (plyrModule.default ?? plyrModule) as typeof Plyr;
-      const youtubeConfig: Record<string, unknown> = { rel: 0, modestbranding: 1 };
+      const youtubeConfig: Record<string, unknown> = {
+        noCookie: true,
+        rel: 0,
+        playsinline: 1,
+        disablekb: 1,
+      };
       if (savedStartTime > 0) {
         youtubeConfig.start = savedStartTime;
       }
@@ -204,6 +221,7 @@ export function PlyrVideoPlayer({
         settings: ["speed", "loop"],
         speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
         youtube: youtubeConfig,
+        keyboard: { focused: false, global: false },
         ratio: "16:9",
         fullscreen: { enabled: true, fallback: true, iosNative: false },
       }) as PlyrInstance;
@@ -262,6 +280,7 @@ export function PlyrVideoPlayer({
 
     void setupPlayer();
     return () => {
+      iframeObserver.disconnect();
       isCancelled = true;
       setIsPlayerReady(false);
       try {
